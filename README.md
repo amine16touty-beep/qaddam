@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# قدّام | QADDAM
 
-## Getting Started
+> كل يوم خطوة لقدّام.
 
-First, run the development server:
+نظام شخصي يربط المهام والعادات والمشاريع واللقاءات والتقدم في تطبيق ويب واحد، عربي أولًا (RTL)، يعمل على الهاتف والكمبيوتر.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## التقنيات
+
+| الطبقة | الاختيار |
+|---|---|
+| الواجهة والخادم | Next.js 15 (App Router) + TypeScript + Server Actions |
+| التصميم | Tailwind CSS v4، مكونات خاصة خفيفة، Lucide، خط IBM Plex Sans Arabic |
+| البيانات والدخول | Supabase (PostgreSQL + Auth + Row Level Security) |
+| الترجمة | next-intl (العربية الآن، بنية جاهزة للإنجليزية في `messages/`) |
+| الاختبارات | Vitest (منطق الحسابات) + SQL (قواعد قاعدة البيانات) + Playwright (السيناريوهات على الكمبيوتر والهاتف) |
+| النشر | Vercel + Supabase Cloud |
+
+## هيكل المشروع
+
+```
+supabase/migrations/   مخطط قاعدة البيانات + RLS + الدوال (convert_decision_to_task, search_all)
+supabase/tests/        اختبار قواعد قاعدة البيانات والصلاحيات
+src/lib/domain/        حسابات نقية ومختبرة: التواريخ، العادات (Streak/انتظام)، التقدم، المتابعات
+src/lib/queries/       قراءة البيانات لكل شاشة
+src/app/actions/       كل عمليات الكتابة (Zod + Supabase)
+src/app/(app)/         الأقسام الخمسة: today, projects, calendar, progress + settings
+src/components/        الواجهة
+messages/ar.json       كل النصوص
+e2e/                   اختبارات السيناريوهات الستة
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## التشغيل محليًا
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+المتطلبات: Node 20+، Docker.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npx supabase start            # يشغّل Postgres + Auth محليًا ويطبق المخطط
+cp .env.example .env.local    # ضع القيم التي يطبعها الأمر السابق (API URL و anon key)
+npm run dev                   # http://localhost:3000
+```
 
-## Learn More
+## الاختبارات
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm test                                   # منطق الحسابات (Vitest)
+npm run test:db                            # RLS والتحويل الآمن والبحث (يتطلب supabase start)
+npm run build && npm start &               # ثم:
+npm run test:e2e                           # السيناريوهات الستة على الكمبيوتر والهاتف
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## النشر (مرة واحدة)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Supabase**: أنشئ مشروعًا على supabase.com، ثم:
+   ```bash
+   npx supabase login
+   npx supabase link --project-ref <PROJECT_REF>
+   npx supabase db push          # يطبق كل الـ migrations
+   ```
+   في Authentication → URL Configuration: اجعل Site URL رابط موقعك على Vercel، وأضف `https://<your-domain>/auth/callback` إلى Redirect URLs.
+2. **Vercel**: استورد المستودع، وأضف متغيري البيئة:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+3. انشر. افتح الرابط على هاتفك، ويمكنك «إضافته إلى الشاشة الرئيسية» ليعمل كتطبيق.
 
-## Deploy on Vercel
+## الأمان وحماية البيانات
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- كل جدول عليه RLS: `user_id = auth.uid()`. مفاتيح أجنبية مركبة `(id, user_id)` تمنع ربط عنصر بعنصر مستخدم آخر.
+- مفتاح `service_role` لا يُستعمل في التطبيق إطلاقًا.
+- الحذف ناعم (سلة محذوفات قابلة للاستعادة)، مع «تراجع» فوري بعد كل حذف أو إكمال.
+- الملاحظات الطويلة تُحفظ تلقائيًا، ونسخة مؤقتة في المتصفح تحمي النص إن انقطع الاتصال.
+- التصدير الكامل (JSON) وتصدير المهام (CSV) من الإعدادات.
+- النسخ الاحتياطي: Supabase يأخذ نسخًا يومية في الخطط المدفوعة. على الخطة المجانية صدّر بياناتك مرة في الشهر.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## قواعد الحساب (لا نسب تجميلية)
+
+| المؤشر | الصيغة |
+|---|---|
+| تقدم المشروع | المهام المنجزة ÷ المهام غير الملغاة؛ بدون مهام: المحطات المنجزة ÷ المحطات؛ بدونهما: لا نسبة |
+| Streak يومي/أيام محددة | الأيام **المجدولة** المتتالية المنجزة؛ اليوم الحالي لا يكسرها قبل نهايته |
+| Streak أسبوعي (X مرات) | الأسابيع المتتالية التي حققت الهدف |
+| انتظام العادة | المنجز ÷ المجدول (أيام الراحة لا تُحسب) |
+| إنجاز المهام الأسبوعي | المنجزة ÷ المستحقة هذا الأسبوع |
+| مشروع يحتاج اهتمامًا | نشط + (بلا نشاط 7 أيام، أو متأخرات، أو الموعد خلال 7 أيام والتقدم < 70%) |
+
+كل الحسابات بمنطقتك الزمنية (من الإعدادات).
+
+## اختصارات لوحة المفاتيح
+
+`N` مهمة · `M` لقاء · `/` أو `Ctrl K` بحث · `G` ثم `T/P/C/R` للتنقل.
+
+## مؤجل عمدًا (والبنية جاهزة له)
+
+ذكاء اصطناعي ولغة طبيعية في الإضافة السريعة، فرق متعددة المستخدمين، Google Calendar (حقول `external_*` موجودة)، WhatsApp، رفع ملفات، أتمتة، اشتراكات.
