@@ -1,9 +1,9 @@
 "use client";
-import { useOptimistic, useState, useTransition } from "react";
+import { useOptimistic, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { CalendarDays, Flag, FolderKanban, Star, UserRound, Users } from "lucide-react";
+import { Check, CalendarDays, Flag, FolderKanban, Star, UserRound, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { diffDays } from "@/lib/domain/dates";
 import { fmtShortDay } from "@/lib/format";
@@ -97,11 +97,68 @@ export function TaskItem({
     });
   }
 
+  // Touch swipe: towards the reading end (left in RTL) completes, the other way stars it for today.
+  const [dx, setDx] = useState(0);
+  const touch = useRef<{ x: number; y: number; locked: boolean | null } | null>(null);
+  const THRESHOLD = 80;
+  const canStar = showStar && optimistic.status === "todo";
+  const swipe = {
+    onTouchStart: (e: React.TouchEvent) => {
+      const p = e.touches[0];
+      touch.current = { x: p.clientX, y: p.clientY, locked: null };
+    },
+    onTouchMove: (e: React.TouchEvent) => {
+      const s = touch.current;
+      if (!s) return;
+      const p = e.touches[0];
+      const mx = p.clientX - s.x;
+      const my = p.clientY - s.y;
+      if (s.locked === null && (Math.abs(mx) > 8 || Math.abs(my) > 8)) s.locked = Math.abs(mx) > Math.abs(my) * 1.2;
+      if (!s.locked) return;
+      const rtl = document.dir === "rtl";
+      const toEnd = rtl ? mx < 0 : mx > 0;
+      if (!toEnd && !canStar) return setDx(0);
+      setDx(Math.max(-140, Math.min(140, mx)));
+    },
+    onTouchEnd: () => {
+      const s = touch.current;
+      touch.current = null;
+      if (!s?.locked) return setDx(0);
+      const rtl = document.dir === "rtl";
+      const toEnd = rtl ? dx < 0 : dx > 0;
+      if (Math.abs(dx) >= THRESHOLD) {
+        if (navigator.vibrate) navigator.vibrate(12);
+        if (toEnd) toggle();
+        else if (canStar) star();
+      }
+      setDx(0);
+    },
+  };
+  const rtlNow = typeof document !== "undefined" && document.dir === "rtl";
+  const swipingToEnd = rtlNow ? dx < 0 : dx > 0;
+  const armed = Math.abs(dx) >= THRESHOLD;
+
   return (
     <>
+      <div className="relative overflow-hidden rounded-xl">
+      {dx !== 0 && (
+        <div
+          aria-hidden
+          className={cn(
+            "absolute inset-0 flex items-center px-5 transition-colors",
+            swipingToEnd ? "justify-end" : "justify-start",
+            swipingToEnd ? (armed ? "bg-success text-white" : "bg-success-soft text-success") : armed ? "bg-warning text-white" : "bg-warning-soft text-warning",
+          )}
+        >
+          {swipingToEnd ? <Check size={22} /> : <Star size={20} fill={armed ? "currentColor" : "none"} />}
+        </div>
+      )}
       <div
+        {...swipe}
+        style={dx ? { transform: `translateX(${dx}px)` } : undefined}
         className={cn(
-          "group flex items-start gap-3 rounded-xl px-2 transition-colors hover:bg-muted/60",
+          "group relative flex items-start gap-3 rounded-xl bg-surface px-2 transition-[background-color,transform] hover:bg-muted/60",
+          dx !== 0 && "transition-none",
           compact ? "py-2" : "py-2.5",
           optimistic.status === "cancelled" && "opacity-50",
         )}
@@ -146,12 +203,13 @@ export function TaskItem({
             title={isPriority ? t("task.unmarkPriority") : t("task.markPriority")}
             className={cn(
               "-m-1 shrink-0 rounded-lg p-2 transition-opacity",
-              isPriority ? "text-warning" : "text-ink-muted/60 opacity-100 hover:text-warning lg:opacity-0 lg:group-hover:opacity-100 lg:focus:opacity-100",
+              isPriority ? "text-warning" : "text-ink-muted/60 opacity-100 hover:text-warning desk:opacity-0 desk:group-hover:opacity-100 desk:focus:opacity-100",
             )}
           >
             <Star size={17} fill={isPriority ? "currentColor" : "none"} />
           </button>
         )}
+      </div>
       </div>
       {open && <TaskDetail task={task} onClose={() => setOpen(false)} />}
     </>

@@ -20,6 +20,8 @@ test("Scenario 1 — morning: sign up, Today is in Arabic RTL and understandable
   await expect(d).toBeHidden();
   const row = page.getByRole("button", { name: "تحضير تقرير الاجتماع" }).first();
   await expect(row).toBeVisible();
+  // let the add's refresh land before the next action, as a person would
+  await page.waitForLoadState("networkidle");
   await page.getByRole("button", { name: /اجعلها أولوية اليوم/ }).first().click();
   await expect(page.locator("text=1/3")).toBeVisible();
   await page.getByRole("checkbox", { name: "إكمال" }).first().click();

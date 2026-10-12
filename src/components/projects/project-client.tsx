@@ -280,7 +280,7 @@ export function Milestones({ projectId, items }: { projectId: string; items: Mil
                 onChange={(e) => run(() => updateMilestone(m.id, { due_date: e.target.value || null }))}
                 className="h-8 w-[8.5rem] rounded-lg border border-transparent bg-transparent px-1 text-xs text-ink-muted hover:border-line"
               />
-              <button aria-label={t("app.delete")} onClick={() => run(() => deleteMilestone(m.id))} className="rounded p-1 text-ink-muted opacity-60 hover:text-danger lg:opacity-0 lg:group-hover:opacity-100">
+              <button aria-label={t("app.delete")} onClick={() => run(() => deleteMilestone(m.id))} className="rounded p-1 text-ink-muted opacity-60 hover:text-danger desk:opacity-0 desk:group-hover:opacity-100">
                 <Trash2 size={14} />
               </button>
             </li>

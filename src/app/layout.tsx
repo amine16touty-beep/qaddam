@@ -18,7 +18,9 @@ export const metadata: Metadata = {
   description: "كل يوم خطوة لقدّام. مهامك وعاداتك ومشاريعك ولقاءاتك في مكان واحد.",
   applicationName: "قدّام",
   manifest: "/manifest.webmanifest",
-  icons: { icon: "/icon.svg" },
+  icons: { icon: "/icon.svg", apple: "/apple-icon.png" },
+  appleWebApp: { capable: true, title: "قدّام", statusBarStyle: "black-translucent" },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {

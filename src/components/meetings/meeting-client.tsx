@@ -253,7 +253,7 @@ function DecisionItem({ d, n }: { d: DecisionRow; n: number }) {
               {t("meeting.toTask")}
             </Button>
           )}
-          <button aria-label={t("meeting.deleteDecision")} onClick={() => run(() => deleteDecision(d.id))} className="rounded p-1 text-ink-muted opacity-60 hover:text-danger lg:opacity-0 lg:group-hover:opacity-100">
+          <button aria-label={t("meeting.deleteDecision")} onClick={() => run(() => deleteDecision(d.id))} className="rounded p-1 text-ink-muted opacity-60 hover:text-danger desk:opacity-0 desk:group-hover:opacity-100">
             <Trash2 size={14} />
           </button>
         </div>

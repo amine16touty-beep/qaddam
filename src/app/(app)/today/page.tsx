@@ -62,9 +62,13 @@ export default async function TodayPage() {
   ].filter(Boolean);
 
   const name = s.profile?.display_name;
+  const ringTotal = priorities.length + todayHabits.length;
+  const ringDone = priorities.filter((p) => p.status === "done").length + habitsDone;
+  const ringPct = ringTotal ? Math.round((ringDone / ringTotal) * 100) : 0;
   return (
     <div className="space-y-5">
-      <header className="pb-1">
+      <header className="flex items-center gap-4 pb-1">
+        <div className="min-w-0 flex-1">
         <h1 className="text-2xl font-semibold leading-tight sm:text-[28px]">
           {t(`greeting.${greetingKey(s.hour)}`)}{name ? `، ${name}` : ""}
         </h1>
@@ -72,6 +76,8 @@ export default async function TodayPage() {
           <span className="text-ink">{fmtDay(s.today, s.numerals)}</span>
           {summary.length > 0 && <span> · {summary.join(" · ")}</span>}
         </p>
+        </div>
+        {ringTotal > 0 && <DayRing pct={ringPct} label={t("today.ringLabel", { done: ringDone, total: ringTotal })} />}
       </header>
 
       {focus.length > 0 && (
@@ -140,6 +146,7 @@ export default async function TodayPage() {
               <Link href="/tasks" className="mt-1 flex items-center gap-1 px-2 py-2 text-sm text-ink-muted hover:text-primary">
                 {t("today.allTasks")} <ChevronLeft size={15} />
               </Link>
+              {(dueToday.length > 0 || overdue.length > 0) && <p className="hidden px-2 pb-1 text-xs text-ink-muted/80 touch:block">{t("today.swipeHint")}</p>}
             </div>
           </Card>
 
@@ -215,6 +222,24 @@ export default async function TodayPage() {
           </Card>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** Day progress at a glance (priorities + habits). Shown on phones and tablets, where the summary line wraps. */
+function DayRing({ pct, label }: { pct: number; label: string }) {
+  const r = 26;
+  const c = 2 * Math.PI * r;
+  return (
+    <div className="relative h-16 w-16 shrink-0 lg:hidden" role="img" aria-label={label}>
+      <svg viewBox="0 0 64 64" className="h-16 w-16 -rotate-90" aria-hidden>
+        <circle cx="32" cy="32" r={r} fill="none" stroke="var(--border)" strokeWidth="6" />
+        <circle
+          cx="32" cy="32" r={r} fill="none" stroke={pct === 100 ? "var(--success)" : "var(--primary)"} strokeWidth="6" strokeLinecap="round"
+          strokeDasharray={c} strokeDashoffset={c * (1 - pct / 100)} style={{ transition: "stroke-dashoffset 400ms ease-out" }}
+        />
+      </svg>
+      <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold" dir="ltr">{pct}%</span>
     </div>
   );
 }

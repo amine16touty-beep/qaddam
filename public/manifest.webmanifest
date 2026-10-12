@@ -1,12 +1,24 @@
 {
+  "id": "/today",
   "name": "قدّام",
   "short_name": "قدّام",
   "description": "كل يوم خطوة لقدّام",
   "start_url": "/today",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "any",
   "dir": "rtl",
   "lang": "ar",
   "background_color": "#fafaf9",
   "theme_color": "#5b5bd6",
-  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "shortcuts": [
+    { "name": "التقاط سريع", "url": "/today?capture=1" },
+    { "name": "اليوم", "url": "/today" }
+  ]
 }

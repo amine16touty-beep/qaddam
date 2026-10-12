@@ -21,6 +21,7 @@ export async function signIn(page: Page, email: string) {
   await page.fill("#password", PASSWORD);
   await page.getByRole("button", { name: "تسجيل الدخول" }).click();
   await page.waitForURL("**/today");
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 }
 
 export async function openCapture(page: Page, type: string) {

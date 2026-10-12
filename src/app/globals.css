@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* hover-capable large screens only: on touch (iPad) reveal-on-hover controls stay visible */
+@custom-variant touch (@media (pointer: coarse));
+@custom-variant desk (@media (hover: hover) and (min-width: 1024px));
+
 /* ---------- QADDAM design tokens ---------- */
 :root {
   --bg: #fafaf9;
@@ -152,4 +156,50 @@ input[type="datetime-local"] {
 
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* ---------- Touch devices (phone + iPad) ---------- */
+@media (pointer: coarse) {
+  /* iOS zooms into any field under 16px */
+  input,
+  textarea,
+  select {
+    font-size: max(16px, 1em);
+  }
+  .touch-none-select {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+}
+
+/* Installed to the home screen: behave like an app, not a page */
+@media (display-mode: standalone) {
+  html,
+  body {
+    overscroll-behavior-y: none;
+  }
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+.press:active {
+  animation: pop 160ms ease-out;
+}
+@keyframes slide-in-side {
+  from { opacity: 0.4; transform: translateX(-24px); }
+  to { opacity: 1; transform: none; }
+}
+@media (min-width: 768px) {
+  .animate-side { animation: slide-in-side 200ms ease-out; }
+}
+@media (max-width: 767px) {
+  .animate-side { animation: fade-up 180ms ease-out; }
 }

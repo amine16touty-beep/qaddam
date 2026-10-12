@@ -49,7 +49,7 @@ export function TaskDetail({ task, onClose }: { task: TaskRow; onClose: () => vo
     });
 
   return (
-    <Sheet open onClose={onClose} title={t("task.details")}>
+    <Sheet open onClose={onClose} title={t("task.details")} side>
       <div className="space-y-4">
         <p className="-mt-1 h-4 text-xs text-ink-muted" aria-live="polite">
           {status === "saving" ? t("app.saving") : status === "saved" ? `${t("app.saved")} ✓` : status === "error" ? t("app.saveFailed") : ""}

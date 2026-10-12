@@ -36,7 +36,7 @@ export function Goals({ goals, projects, habits }: { goals: G[]; projects: { goa
               <option value="achieved">{t("goal.achieved")}</option>
               <option value="dropped">{t("goal.dropped")}</option>
             </Select>
-            <button aria-label={t("app.delete")} onClick={() => run(() => deleteGoal(g.id))} className="rounded p-1 text-ink-muted opacity-60 hover:text-danger lg:opacity-0 lg:group-hover:opacity-100">
+            <button aria-label={t("app.delete")} onClick={() => run(() => deleteGoal(g.id))} className="rounded p-1 text-ink-muted opacity-60 hover:text-danger desk:opacity-0 desk:group-hover:opacity-100">
               <Trash2 size={14} />
             </button>
           </div>

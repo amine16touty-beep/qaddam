@@ -26,7 +26,7 @@ export function InlineAdd({
         start(async () => {
           const r = await onAdd(text, date || null);
           if (!r.ok) return void toast.error(r.error);
-          if (ref.current) ref.current.value = "";
+          if (ref.current && ref.current.value.trim() === text) ref.current.value = "";
           setDate("");
           ref.current?.focus();
         });

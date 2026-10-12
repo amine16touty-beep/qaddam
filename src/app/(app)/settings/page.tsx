@@ -54,7 +54,7 @@ export default async function SettingsPage() {
           ))}
         </dl>
       </Card>
-      <form action={signOut} className="lg:hidden">
+      <form action={signOut} className="xl:hidden">
         <button className={buttonClass("secondary", "lg", "w-full")}>{t("nav.signOut")}</button>
       </form>
     </div>

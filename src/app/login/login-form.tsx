@@ -1,6 +1,5 @@
 "use client";
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -8,7 +7,6 @@ import { Button, Field, Input } from "@/components/ui";
 
 export function LoginForm({ initialError }: { initialError?: string }) {
   const t = useTranslations("auth");
-  const router = useRouter();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [error, setError] = useState(initialError);
   const [info, setInfo] = useState<string>();
@@ -37,8 +35,8 @@ export function LoginForm({ initialError }: { initialError?: string }) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) return setError(error.message.toLowerCase().includes("invalid") ? t("invalid") : t("generic"));
       }
-      router.replace("/today");
-      router.refresh();
+      // full load: the new auth cookies reach the server once, with no client refresh racing the first render
+      window.location.replace("/today");
     });
   }
 
