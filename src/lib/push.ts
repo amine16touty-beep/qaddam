@@ -4,7 +4,7 @@ import webpush from "web-push";
 export type PushPayload = { title: string; body: string; url: string; tag?: string };
 
 export function pushConfigured() {
-  return Boolean(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY);
+  return Boolean((process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || process.env.VAPID_PUBLIC_KEY) && process.env.VAPID_PRIVATE_KEY);
 }
 
 let ready = false;
@@ -12,7 +12,7 @@ function setup() {
   if (ready) return;
   webpush.setVapidDetails(
     process.env.VAPID_SUBJECT || "mailto:noreply@qaddam.app",
-    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || process.env.VAPID_PUBLIC_KEY)!,
     process.env.VAPID_PRIVATE_KEY!,
   );
   ready = true;

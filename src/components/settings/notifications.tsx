@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Bell, BellOff, Send, Share } from "lucide-react";
 import { Button, Field, Select } from "@/components/ui";
 import { updateProfile } from "@/app/actions/settings";
-import { deletePushSubscription, savePushSubscription, sendTestPush } from "@/app/actions/push";
+import { deletePushSubscription, getVapidPublicKey, savePushSubscription, sendTestPush } from "@/app/actions/push";
 
 type State = "loading" | "unsupported" | "ios-install" | "denied" | "off" | "on";
 
@@ -30,7 +30,6 @@ export function NotificationSettings({ remindMeetingsMin, remindTasks }: { remin
   const [state, setState] = useState<State>("loading");
   const [endpoint, setEndpoint] = useState<string | null>(null);
   const [busy, start] = useTransition();
-  const vapid = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
   useEffect(() => {
     (async () => {
@@ -57,6 +56,7 @@ export function NotificationSettings({ remindMeetingsMin, remindTasks }: { remin
     });
 
   const subscribe = async () => {
+      const vapid = await getVapidPublicKey();
       if (!vapid) return void toast.error(t("notConfigured"));
       const perm = await Notification.requestPermission();
       if (perm !== "granted") return setState(perm === "denied" ? "denied" : "off");

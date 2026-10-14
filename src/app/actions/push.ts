@@ -43,3 +43,8 @@ export async function sendTestPush(endpoint: string) {
     if (r !== "ok") throw new Error("PUSH_FAILED");
   });
 }
+
+/** Read at request time, so the key works without a rebuild after it is added in Vercel. */
+export async function getVapidPublicKey() {
+  return process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || process.env.VAPID_PUBLIC_KEY || null;
+}
