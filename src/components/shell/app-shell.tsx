@@ -74,6 +74,11 @@ export function AppShell({ data, children }: { data: ShellData; children: React.
     }
   }, []);
 
+  // service worker: needed for reminders (push) and for the installed app
+  useEffect(() => {
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});
+  }, []);
+
   // align timezone with the device the first time
   useEffect(() => {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;

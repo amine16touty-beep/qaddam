@@ -139,14 +139,14 @@ isOneToOne: false
                   ]
                 },"meetings": {
                   Row: {
-                    "agenda": string,"context_id": string | null,"created_at": string,"deleted_at": string | null,"ends_at": string | null,"external_id": string | null,"external_source": string | null,"id": string,"location": string | null,"notes": string,"participants": (string)[],"project_id": string | null,"search_text": string | null,"starts_at": string,"title": string,"updated_at": string,"url": string | null,"user_id": string
+                    "agenda": string,"context_id": string | null,"created_at": string,"deleted_at": string | null,"ends_at": string | null,"external_id": string | null,"external_source": string | null,"id": string,"location": string | null,"notes": string,"participants": (string)[],"project_id": string | null,"reminded_at": string | null,"search_text": string | null,"starts_at": string,"title": string,"updated_at": string,"url": string | null,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "agenda"?: string,"context_id"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"ends_at"?: string | null,"external_id"?: string | null,"external_source"?: string | null,"id"?: string,"location"?: string | null,"notes"?: string,"participants"?: (string)[],"project_id"?: string | null,"search_text"?: never,"starts_at": string,"title": string,"updated_at"?: string,"url"?: string | null,"user_id"?: string
+                    "agenda"?: string,"context_id"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"ends_at"?: string | null,"external_id"?: string | null,"external_source"?: string | null,"id"?: string,"location"?: string | null,"notes"?: string,"participants"?: (string)[],"project_id"?: string | null,"reminded_at"?: string | null,"search_text"?: never,"starts_at": string,"title": string,"updated_at"?: string,"url"?: string | null,"user_id"?: string
                   }
                   Update: {
-                    "agenda"?: string,"context_id"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"ends_at"?: string | null,"external_id"?: string | null,"external_source"?: string | null,"id"?: string,"location"?: string | null,"notes"?: string,"participants"?: (string)[],"project_id"?: string | null,"search_text"?: never,"starts_at"?: string,"title"?: string,"updated_at"?: string,"url"?: string | null,"user_id"?: string
+                    "agenda"?: string,"context_id"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"ends_at"?: string | null,"external_id"?: string | null,"external_source"?: string | null,"id"?: string,"location"?: string | null,"notes"?: string,"participants"?: (string)[],"project_id"?: string | null,"reminded_at"?: string | null,"search_text"?: never,"starts_at"?: string,"title"?: string,"updated_at"?: string,"url"?: string | null,"user_id"?: string
                   }
                   Relationships: [
                     {
@@ -217,14 +217,14 @@ isOneToOne: false
                   ]
                 },"profiles": {
                   Row: {
-                    "created_at": string,"display_name": string | null,"id": string,"locale": string,"numerals": string,"theme": string,"timezone": string,"updated_at": string,"week_start": number
+                    "created_at": string,"display_name": string | null,"id": string,"locale": string,"numerals": string,"remind_meetings_min": number,"remind_tasks": boolean,"theme": string,"timezone": string,"updated_at": string,"week_start": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"display_name"?: string | null,"id": string,"locale"?: string,"numerals"?: string,"theme"?: string,"timezone"?: string,"updated_at"?: string,"week_start"?: number
+                    "created_at"?: string,"display_name"?: string | null,"id": string,"locale"?: string,"numerals"?: string,"remind_meetings_min"?: number,"remind_tasks"?: boolean,"theme"?: string,"timezone"?: string,"updated_at"?: string,"week_start"?: number
                   }
                   Update: {
-                    "created_at"?: string,"display_name"?: string | null,"id"?: string,"locale"?: string,"numerals"?: string,"theme"?: string,"timezone"?: string,"updated_at"?: string,"week_start"?: number
+                    "created_at"?: string,"display_name"?: string | null,"id"?: string,"locale"?: string,"numerals"?: string,"remind_meetings_min"?: number,"remind_tasks"?: boolean,"theme"?: string,"timezone"?: string,"updated_at"?: string,"week_start"?: number
                   }
                   Relationships: [
                     
@@ -287,16 +287,30 @@ isOneToOne: false
       referencedColumns: ["id","user_id"]
     }
                   ]
-                },"tasks": {
+                },"push_subscriptions": {
                   Row: {
-                    "completed_at": string | null,"context_id": string | null,"created_at": string,"decision_id": string | null,"deleted_at": string | null,"due_date": string | null,"due_time": string | null,"id": string,"kind": string,"meeting_id": string | null,"milestone_id": string | null,"notes": string | null,"owner_text": string | null,"position": number,"priority": string,"priority_date": string | null,"project_id": string | null,"search_text": string | null,"status": string,"title": string,"updated_at": string,"user_id": string
+                    "auth": string,"created_at": string,"device": string | null,"endpoint": string,"id": string,"p256dh": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "completed_at"?: string | null,"context_id"?: string | null,"created_at"?: string,"decision_id"?: string | null,"deleted_at"?: string | null,"due_date"?: string | null,"due_time"?: string | null,"id"?: string,"kind"?: string,"meeting_id"?: string | null,"milestone_id"?: string | null,"notes"?: string | null,"owner_text"?: string | null,"position"?: number,"priority"?: string,"priority_date"?: string | null,"project_id"?: string | null,"search_text"?: never,"status"?: string,"title": string,"updated_at"?: string,"user_id"?: string
+                    "auth": string,"created_at"?: string,"device"?: string | null,"endpoint": string,"id"?: string,"p256dh": string,"user_id"?: string
                   }
                   Update: {
-                    "completed_at"?: string | null,"context_id"?: string | null,"created_at"?: string,"decision_id"?: string | null,"deleted_at"?: string | null,"due_date"?: string | null,"due_time"?: string | null,"id"?: string,"kind"?: string,"meeting_id"?: string | null,"milestone_id"?: string | null,"notes"?: string | null,"owner_text"?: string | null,"position"?: number,"priority"?: string,"priority_date"?: string | null,"project_id"?: string | null,"search_text"?: never,"status"?: string,"title"?: string,"updated_at"?: string,"user_id"?: string
+                    "auth"?: string,"created_at"?: string,"device"?: string | null,"endpoint"?: string,"id"?: string,"p256dh"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"tasks": {
+                  Row: {
+                    "completed_at": string | null,"context_id": string | null,"created_at": string,"decision_id": string | null,"deleted_at": string | null,"due_date": string | null,"due_time": string | null,"id": string,"kind": string,"meeting_id": string | null,"milestone_id": string | null,"notes": string | null,"owner_text": string | null,"position": number,"priority": string,"priority_date": string | null,"project_id": string | null,"reminded_at": string | null,"search_text": string | null,"status": string,"title": string,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "completed_at"?: string | null,"context_id"?: string | null,"created_at"?: string,"decision_id"?: string | null,"deleted_at"?: string | null,"due_date"?: string | null,"due_time"?: string | null,"id"?: string,"kind"?: string,"meeting_id"?: string | null,"milestone_id"?: string | null,"notes"?: string | null,"owner_text"?: string | null,"position"?: number,"priority"?: string,"priority_date"?: string | null,"project_id"?: string | null,"reminded_at"?: string | null,"search_text"?: never,"status"?: string,"title": string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Update: {
+                    "completed_at"?: string | null,"context_id"?: string | null,"created_at"?: string,"decision_id"?: string | null,"deleted_at"?: string | null,"due_date"?: string | null,"due_time"?: string | null,"id"?: string,"kind"?: string,"meeting_id"?: string | null,"milestone_id"?: string | null,"notes"?: string | null,"owner_text"?: string | null,"position"?: number,"priority"?: string,"priority_date"?: string | null,"project_id"?: string | null,"reminded_at"?: string | null,"search_text"?: never,"status"?: string,"title"?: string,"updated_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     {
@@ -370,6 +384,7 @@ isOneToOne: false
 "priority": string,
 "priority_date": string | null,
 "project_id": string | null,
+"reminded_at": string | null,
 "search_text": string | null,
 "status": string,
 "title": string,

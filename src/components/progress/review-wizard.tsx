@@ -13,7 +13,7 @@ import type { TaskRow } from "@/lib/queries/tasks";
 export function ReviewWizard({
   nextWeekStart,
   done,
-  late,
+  late: lateNow,
   milestones,
   habits,
   initial,
@@ -28,6 +28,9 @@ export function ReviewWizard({
   const t = useTranslations();
   const router = useRouter();
   const [step, setStep] = useState(0);
+  // keep the list as it was when the review started: a handled task drops out of the server's
+  // "late" list on refresh, and its row (with the "moved" / "cancelled" note) should stay in place
+  const [late] = useState(lateNow);
   const [handled, setHandled] = useState<Record<string, string>>({});
   const [pending, start] = useTransition();
   const [saving, startSave] = useTransition();

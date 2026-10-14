@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { ChevronLeft, Download, Keyboard, Trash2 } from "lucide-react";
+import { Bell, ChevronLeft, Download, Keyboard, Trash2 } from "lucide-react";
 import { getSession } from "@/lib/session";
 import { buttonClass, Card, CardHeader, PageHeader } from "@/components/ui";
 import { ContextsEditor, ProfileForm } from "@/components/settings/settings-client";
 import { signOut } from "@/app/actions/settings";
+import { NotificationSettings } from "@/components/settings/notifications";
 
 export const metadata = { title: "الإعدادات" };
 
@@ -20,6 +21,12 @@ export default async function SettingsPage() {
         <CardHeader title={t("settings.profile")} />
         <div className="px-4 pb-4">
           <ProfileForm profile={{ display_name: s.profile?.display_name ?? "", timezone: s.tz, week_start: s.weekStart, numerals: s.numerals, theme: (s.profile?.theme ?? "system") as "system" }} zones={zones} />
+        </div>
+      </Card>
+      <Card id="notifications">
+        <CardHeader title={t("notify.title")} icon={<Bell size={17} className="text-ink-muted" />} />
+        <div className="px-4 pb-4">
+          <NotificationSettings remindMeetingsMin={s.profile?.remind_meetings_min ?? 15} remindTasks={s.profile?.remind_tasks ?? true} />
         </div>
       </Card>
       <Card>

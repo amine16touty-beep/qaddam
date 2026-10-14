@@ -26,6 +26,8 @@ export async function failure(err: unknown): Promise<{ ok: false; error: string 
     if (issue?.message?.startsWith("errors.")) return { ok: false, error: t(issue.message as "errors.required") };
     return { ok: false, error: t("errors.required") };
   }
+  if (msg.includes("PUSH_NOT_CONFIGURED")) return { ok: false, error: t("notify.notConfigured") };
+  if (msg.includes("PUSH_FAILED")) return { ok: false, error: t("notify.failed") };
   if (msg.includes("PRIORITY_LIMIT")) return { ok: false, error: t("task.priorityLimit") };
   if (msg.includes("NOT_FOUND") || msg.includes("PGRST116")) return { ok: false, error: t("errors.notFound") };
   if (msg.includes("duplicate key")) return { ok: false, error: t("errors.duplicateName") };

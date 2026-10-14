@@ -2,7 +2,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { act, authed, id, must, optText, reqText } from "./_helpers";
+import { act, authed, id, must, onlySent, optText, reqText } from "./_helpers";
 
 const profileInput = z.object({
   display_name: optText(80),
@@ -10,11 +10,14 @@ const profileInput = z.object({
   week_start: z.number().int().min(0).max(6).optional(),
   numerals: z.enum(["latn", "arab"]).optional(),
   theme: z.enum(["system", "light", "dark"]).optional(),
+  remind_meetings_min: z.union([z.literal(0), z.literal(5), z.literal(10), z.literal(15), z.literal(30), z.literal(60), z.literal(120)]).optional(),
+  remind_tasks: z.boolean().optional(),
 });
 
 export async function updateProfile(patch: z.input<typeof profileInput>) {
   return act(async () => {
-    const v = profileInput.parse(patch);
+    // only the fields sent: optText turns a missing display_name into null otherwise
+    const v = onlySent(profileInput.parse(patch), patch);
     const { supabase, user } = await authed();
     must(await supabase.from("profiles").update(v).eq("id", user.id).select("id").single());
     if (v.theme) (await cookies()).set("qaddam_theme", v.theme, { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax" });

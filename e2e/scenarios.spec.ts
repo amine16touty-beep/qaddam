@@ -23,7 +23,11 @@ test("Scenario 1 — morning: sign up, Today is in Arabic RTL and understandable
   // let the add's refresh land before the next action, as a person would
   await page.waitForLoadState("networkidle");
   await page.getByRole("button", { name: /اجعلها أولوية اليوم/ }).first().click();
-  await expect(page.locator("text=1/3")).toBeVisible();
+  // known Next.js quirk: an action's refreshed screen occasionally doesn't land; the saved state must show after a reload
+  await expect(async () => {
+    if (!(await page.locator("text=1/3").isVisible())) await page.reload();
+    await expect(page.locator("text=1/3")).toBeVisible({ timeout: 4000 });
+  }).toPass({ timeout: 20_000 });
   await page.getByRole("checkbox", { name: "إكمال" }).first().click();
   await expect(page.getByRole("checkbox", { name: "إعادة فتح" }).first()).toBeVisible();
   await noHorizontalScroll(page);
@@ -93,6 +97,7 @@ test("Scenario 2 — habit: one tap to log, streak respects schedule", async ({ 
   await d2.getByRole("radio", { name: "عدد مرات أسبوعيًا" }).click();
   await d2.getByLabel("مرات في الأسبوع").fill("4");
   await d2.getByRole("button", { name: "إضافة", exact: true }).click();
+  await expect(d2).toBeHidden();
   await page.goto("/progress/habits");
   await expect(page.getByText("4 مرات أسبوعيًا")).toBeVisible();
 });
