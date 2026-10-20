@@ -7,9 +7,9 @@ import type { ActionResult } from "@/lib/utils";
 
 export async function authed() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("UNAUTHENTICATED");
-  return { supabase, user };
+  const { data } = await supabase.auth.getClaims();
+  if (!data?.claims) throw new Error("UNAUTHENTICATED");
+  return { supabase, user: { id: data.claims.sub, email: data.claims.email } };
 }
 
 export function refresh() {

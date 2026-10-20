@@ -2,8 +2,7 @@ import { AppShell } from "@/components/shell/app-shell";
 import { getActiveProjects, getContexts, getSession } from "@/lib/session";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const s = await getSession();
-  const [contexts, projects] = await Promise.all([getContexts(), getActiveProjects()]);
+  const [s, contexts, projects] = await Promise.all([getSession(), getContexts(), getActiveProjects()]);
   return (
     <AppShell
       data={{
