@@ -217,14 +217,14 @@ isOneToOne: false
                   ]
                 },"profiles": {
                   Row: {
-                    "created_at": string,"display_name": string | null,"id": string,"locale": string,"numerals": string,"remind_meetings_min": number,"remind_tasks": boolean,"theme": string,"timezone": string,"updated_at": string,"week_start": number
+                    "calendar_token": string | null,"created_at": string,"display_name": string | null,"id": string,"locale": string,"numerals": string,"remind_meetings_min": number,"remind_tasks": boolean,"theme": string,"timezone": string,"updated_at": string,"week_start": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"display_name"?: string | null,"id": string,"locale"?: string,"numerals"?: string,"remind_meetings_min"?: number,"remind_tasks"?: boolean,"theme"?: string,"timezone"?: string,"updated_at"?: string,"week_start"?: number
+                    "calendar_token"?: string | null,"created_at"?: string,"display_name"?: string | null,"id": string,"locale"?: string,"numerals"?: string,"remind_meetings_min"?: number,"remind_tasks"?: boolean,"theme"?: string,"timezone"?: string,"updated_at"?: string,"week_start"?: number
                   }
                   Update: {
-                    "created_at"?: string,"display_name"?: string | null,"id"?: string,"locale"?: string,"numerals"?: string,"remind_meetings_min"?: number,"remind_tasks"?: boolean,"theme"?: string,"timezone"?: string,"updated_at"?: string,"week_start"?: number
+                    "calendar_token"?: string | null,"created_at"?: string,"display_name"?: string | null,"id"?: string,"locale"?: string,"numerals"?: string,"remind_meetings_min"?: number,"remind_tasks"?: boolean,"theme"?: string,"timezone"?: string,"updated_at"?: string,"week_start"?: number
                   }
                   Relationships: [
                     
@@ -365,7 +365,20 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "convert_decision_to_task":
+            "calendar_feed":
+{ Args: { "p_token": string }; Returns: {
+              "agenda": string,
+"ends_at": string | null,
+"id": string,
+"location": string | null,
+"participants": string[],
+"starts_at": string,
+"timezone": string,
+"title": string,
+"updated_at": string,
+"url": string | null
+            }[]
+                           },"convert_decision_to_task":
 { Args: { "p_decision_id": string }; Returns: {
               "completed_at": string | null,
 "context_id": string | null,
