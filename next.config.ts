@@ -5,6 +5,11 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  experimental: {
+    // keep visited pages in the client router cache so going back to a tab is instant;
+    // every server action calls revalidatePath, which clears it after a change
+    staleTimes: { dynamic: 30 },
+  },
   async headers() {
     return [
       {

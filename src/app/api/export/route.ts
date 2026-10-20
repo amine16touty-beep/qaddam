@@ -6,7 +6,8 @@ const TABLES = ["profiles", "contexts", "goals", "programs", "projects", "milest
 /** Full personal export. RLS guarantees only the caller's rows are returned. */
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: auth } = await supabase.auth.getClaims();
+  const user = auth?.claims ? { id: auth.claims.sub, email: auth.claims.email } : null;
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const stamp = new Date().toISOString().slice(0, 10);
 
