@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
-import { ArrowLeftRight, CheckCircle2, CircleDashed, ExternalLink, ListChecks, MapPin, Trash2, UserRound, Video } from "lucide-react";
+import { ArrowLeftRight, CalendarPlus, CheckCircle2, CircleDashed, ExternalLink, ListChecks, MapPin, Trash2, UserRound, Video } from "lucide-react";
 import { Button, Input, Select } from "@/components/ui";
 import { AutosaveTextarea } from "@/components/ui/autosave-textarea";
 import { useConfirm } from "@/components/ui/confirm";
 import { cn } from "@/lib/utils";
+import { googleEventUrl } from "@/lib/domain/calendar";
 import {
   convertAllDecisions,
   convertDecision,
@@ -130,7 +131,15 @@ export function MeetingHeader({ meeting }: { meeting: Meeting }) {
           />
         </label>
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          title={t("gcal.addEventHint")}
+          onClick={() => window.open(googleEventUrl(meeting, window.location.origin), "_blank", "noopener,noreferrer")}
+        >
+          <CalendarPlus size={15} /> {t("gcal.addEvent")}
+        </Button>
         <Button
           variant="ghost"
           size="sm"

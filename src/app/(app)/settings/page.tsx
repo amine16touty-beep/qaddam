@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { Bell, ChevronLeft, Download, Keyboard, Trash2 } from "lucide-react";
+import { headers } from "next/headers";
+import { Bell, CalendarDays, ChevronLeft, Download, Keyboard, Trash2 } from "lucide-react";
 import { getSession } from "@/lib/session";
 import { buttonClass, Card, CardHeader, PageHeader } from "@/components/ui";
 import { ContextsEditor, ProfileForm } from "@/components/settings/settings-client";
 import { signOut } from "@/app/actions/settings";
 import { NotificationSettings } from "@/components/settings/notifications";
+import { CalendarSync } from "@/components/settings/calendar-sync";
 
 export const metadata = { title: "الإعدادات" };
 
@@ -14,6 +16,8 @@ export default async function SettingsPage() {
   const t = await getTranslations();
   const { data: contexts } = await s.supabase.from("contexts").select("id, name, color, is_archived").order("position");
   const zones = Intl.supportedValuesOf("timeZone");
+  const h = await headers();
+  const origin = `${h.get("x-forwarded-proto") ?? "https"}://${h.get("x-forwarded-host") ?? h.get("host")}`;
   return (
     <div className="space-y-5">
       <PageHeader title={t("settings.title")} subtitle={s.user.email} />
@@ -27,6 +31,12 @@ export default async function SettingsPage() {
         <CardHeader title={t("notify.title")} icon={<Bell size={17} className="text-ink-muted" />} />
         <div className="px-4 pb-4">
           <NotificationSettings remindMeetingsMin={s.profile?.remind_meetings_min ?? 15} remindTasks={s.profile?.remind_tasks ?? true} />
+        </div>
+      </Card>
+      <Card id="google-calendar">
+        <CardHeader title={t("gcal.title")} icon={<CalendarDays size={17} className="text-ink-muted" />} />
+        <div className="px-4 pb-4">
+          <CalendarSync token={s.profile?.calendar_token ?? null} origin={origin} />
         </div>
       </Card>
       <Card>
